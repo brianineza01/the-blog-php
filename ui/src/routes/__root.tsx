@@ -29,14 +29,14 @@ function RootComponent() {
                 >
                     Posts 
                 </Link> */}
-                {/* <Link
-                    to="/layout-a"
+                <Link
+                    to="/posts/create"
                     activeProps={{
                         className: "font-bold",
                     }}
                 >
-                    Layout
-                </Link> */}
+                    Create Post
+                </Link>
             </div>
             <hr />
             <Outlet />
