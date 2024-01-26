@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { handleGetPosts } from "../../components/Posts/helpers";
 import PostCard from "../../components/Posts/PostCard";
-
+export const revalidate = 20;
 export default async function Home() {
     const data = await handleGetPosts();
     return (

@@ -30,8 +30,12 @@ import {
 import Spinner from "../../ui/Spinner";
 import { useRouter } from "next/navigation";
 
+import { useToast } from "@/components/ui/use-toast";
+
 export default function CreatePostForm() {
     const { push } = useRouter();
+    const { toast } = useToast();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
     });
@@ -39,10 +43,20 @@ export default function CreatePostForm() {
         mutationFn: handleCreatePostRequest,
         onSuccess: () => {
             console.log("success");
+            toast({
+                title: "Post Created",
+                description: "Your post has been created successfully",
+                variant: "default",
+            });
             push("/");
         },
-        onError: () => {
+        onError: (err) => {
             console.log("error");
+            toast({
+                title: "Error",
+                description: err.message ?? "Something went wrong",
+                variant: "destructive",
+            });
         },
     });
 
@@ -140,7 +154,11 @@ export default function CreatePostForm() {
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button className="w-full flex gap-3" type="submit">
+                        <Button
+                            className="w-full flex gap-3"
+                            // type="submit"
+                            variant={"default"}
+                        >
                             {isPending ? <Spinner /> : null}
                             Publish Post
                         </Button>

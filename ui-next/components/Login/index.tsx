@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import useSession from "@/hooks/useSession";
 import axios, { AxiosResponse } from "axios";
 import Link from "next/link";
+import Spinner from "../ui/Spinner";
 
 axios.defaults.withCredentials = true;
 
@@ -91,6 +92,7 @@ export default function Login() {
     const { isLoading, data, error } = useQuery({
         queryFn: getCurrentUser,
         queryKey: ["user"],
+        retry: false,
     });
 
     if (isLoading) {
@@ -122,11 +124,11 @@ export default function Login() {
                 <CardFooter className="flex gap-3 justify-evenly">
                     <Button
                         variant={"destructive"}
-                        onClick={() => {
-                            axios.get(`/backend/api/logout`, {
+                        onClick={async () => {
+                            await axios.post(`/backend/api/logout`, {
                                 withCredentials: true,
                             });
-                            push("/login");
+                            push("/");
                         }}
                     >
                         Logout
@@ -193,7 +195,10 @@ export default function Login() {
                         />
                     </CardContent>
                     <CardFooter>
-                        <Button className="w-full">Sign in</Button>
+                        <Button className="w-full flex gap-3">
+                            {isPending && <Spinner />}
+                            Sign in
+                        </Button>
                     </CardFooter>
                 </Card>
             </form>
