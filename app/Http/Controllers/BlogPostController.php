@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Supabase\Storage\StorageFile;
 
+use Illuminate\Database\UniqueConstraintViolationException;
 
 
 
@@ -68,6 +69,16 @@ class BlogPostController extends Controller
         $post_name = $request->input('name');
         $slug = str_replace(' ', '-', strtolower($post_name));
 
+
+        $slug_exists = BlogPostModel::where('slug', $slug)->first();
+
+        if ($slug_exists !== null) {
+            return response()->json([
+                "message" => "Post title exists, change the title and try again.",
+                "status" => "error"
+            ], 400);
+        }
+
         $image_contents = $request->file('image')->get();
         $image_filename = $request->file('image')->getClientOriginalName();
 
@@ -92,10 +103,24 @@ class BlogPostController extends Controller
             "user_id" => $user_id,
         ];
 
+        $post = null;
 
-        $post = BlogPostModel::create($newPost);
+        try {
+            $post = BlogPostModel::create($newPost);
+            return response()->json($post);
+        } catch (\Throwable $th) {
 
-        return response()->json($post);
+            if ($th instanceof UniqueConstraintViolationException) {
+                return response()->json([
+                    "message" => "Post already exists with title exists, change the slug or title and try again."
+                ], 400);
+            }
+            return response()->json([
+                "message" => "Something went wrong, please try again later."
+            ], 500);
+        }
+
+
     }
 
     /**
