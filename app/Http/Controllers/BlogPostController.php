@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BlogPostModel;
 use Illuminate\Http\Request;
 
-
+use Illuminate\Support\Facades\Log;
 use Supabase\Storage\StorageFile;
 
 
@@ -17,17 +17,20 @@ class BlogPostController extends Controller
      * Display a listing of the resource.
      */
 
-    private $SUPABASE_URL;
+    // private $SUPABASE_URL;
     private $SUPABASE_KEY;
     private $SUPABASE_BUCKET;
     private $SUPABASE_REFERENCE_ID;
 
     public function __construct()
     {
-        $this->SUPABASE_URL = env('SUPABASE_URL');
+        // $this->SUPABASE_URL = env('SUPABASE_URL');
         $this->SUPABASE_KEY = env('SUPABASE_KEY');
         $this->SUPABASE_BUCKET = env('SUPABASE_BUCKET');
         $this->SUPABASE_REFERENCE_ID = env('SUPABASE_REFERENCE_ID');
+
+        $this->middleware('auth')->only('store');
+
     }
 
     public function index()
@@ -40,6 +43,12 @@ class BlogPostController extends Controller
             'created_at',
         ];
         $posts = BlogPostModel::all($cols);
+
+
+        foreach ($posts as $post) {
+            $post->user()->get();
+        }
+
         return response()->json($posts);
     }
 
@@ -60,23 +69,29 @@ class BlogPostController extends Controller
         $slug = str_replace(' ', '-', strtolower($post_name));
 
         $image_contents = $request->file('image')->get();
+        $image_filename = $request->file('image')->getClientOriginalName();
+
+        $extension = strtolower(pathinfo($image_filename, PATHINFO_EXTENSION));
+
+        $upload_file_name = $slug . "." . $extension;
+
+        $user_id = $request->user()->id;
 
         $storage_instance = new StorageFile($this->SUPABASE_KEY, $this->SUPABASE_REFERENCE_ID, $this->SUPABASE_BUCKET);
 
-        $storage_instance->upload("blogpost/" . $slug, $image_contents, ['contentType' => 'image/png', "public" => true]);
+        $storage_instance->upload("blogpost/" . $upload_file_name, $image_contents, ["public" => true]);
 
-        $img_url = $storage_instance->getPublicUrl("blogpost/" . $slug, ['download' => true]);
+        $img_url = $storage_instance->getPublicUrl("blogpost/" . $upload_file_name, ['download' => true]);
 
-        echo $img_url;
 
         $newPost = [
             "name" => $post_name,
             "slug" => $slug,
             "image_url" => $img_url,
             "content" => json_encode($request->input('content')),
+            "user_id" => $user_id,
         ];
 
-        echo json_encode($newPost);
 
         $post = BlogPostModel::create($newPost);
 
@@ -89,6 +104,11 @@ class BlogPostController extends Controller
     public function show(string $slug)
     {
         $post = BlogPostModel::where('slug', $slug)->first();
+        $user = $post->user()->get(["name", 'email'])->first();
+        $post->user = $user;
+        $post->content = json_decode($post->content);
+        $post->comments = $post->comments()->get();
+        $post->likes = $post->likes()->get();
         return response()->json($post);
     }
 

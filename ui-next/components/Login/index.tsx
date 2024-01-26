@@ -22,10 +22,11 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { API_BASE_URL } from "@/config/fetch";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import useSession from "@/hooks/useSession";
 import axios, { AxiosResponse } from "axios";
+import Link from "next/link";
 
 axios.defaults.withCredentials = true;
 
@@ -35,7 +36,7 @@ const loginSchema = z.object({
 });
 
 const handleSubmit = async (data: z.infer<typeof loginSchema>) => {
-    await axios.get(`${API_BASE_URL}/sanctum/csrf-cookie`, {
+    await axios.get(`/backend/sanctum/csrf-cookie`, {
         withCredentials: true,
     });
     type Res = AxiosResponse<{
@@ -47,9 +48,16 @@ const handleSubmit = async (data: z.infer<typeof loginSchema>) => {
         updated_at: string;
     }>;
     const result = await axios<z.infer<typeof loginSchema>, Res>({
-        url: `${API_BASE_URL}/api/login`,
+        url: `/backend/api/login`,
         method: "POST",
         data,
+        withCredentials: true,
+    });
+    return result.data;
+};
+
+const getCurrentUser = async () => {
+    const result = await axios.get(`/backend/api/user`, {
         withCredentials: true,
     });
     return result.data;
@@ -74,13 +82,64 @@ export default function Login() {
                 id: data.id,
                 name: data.name,
             });
-            console.log(data);
-            // push("/");
+            push("/");
         },
         onError: (error) => {
             console.log(error);
         },
     });
+
+    const { isLoading, data, error } = useQuery({
+        queryFn: getCurrentUser,
+        queryKey: ["user"],
+    });
+
+    if (isLoading) {
+        return (
+            <Card className="w-full max-w-lg">
+                <CardHeader>
+                    <CardTitle className="text-2xl text-center">
+                        Loading...
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <p className="text-center">Please wait...</p>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    if (data) {
+        return (
+            <Card className="w-full max-w-lg">
+                <CardHeader>
+                    <CardTitle className="text-2xl text-center">
+                        Welcome back, {data.name}
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <p className="text-center">You are logged in.</p>
+                </CardContent>
+                <CardFooter className="flex gap-3 justify-evenly">
+                    <Button
+                        variant={"destructive"}
+                        onClick={() => {
+                            axios.get(`/backend/api/logout`, {
+                                withCredentials: true,
+                            });
+                            push("/login");
+                        }}
+                    >
+                        Logout
+                    </Button>
+
+                    <Link href="/">
+                        <Button>Home</Button>
+                    </Link>
+                </CardFooter>
+            </Card>
+        );
+    }
 
     return (
         <Form {...form}>

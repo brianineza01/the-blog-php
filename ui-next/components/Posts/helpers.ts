@@ -1,3 +1,5 @@
+import axios from "@/config/axios";
+
 export interface Post {
     name: string;
     image_url: string;
@@ -6,8 +8,11 @@ export interface Post {
 }
 
 export const handleGetPosts = async () => {
-    const response = await fetch("http://127.0.0.1:8000/api/blog-posts");
-    const data = await response.json();
-    console.log(data);
-    return data as Post[];
+    try {
+        const response = await axios.get(`/api/blog-posts`);
+        const data = await response.data;
+        return data as Post[];
+    } catch (error: any) {
+        console.log(error.message);
+    }
 };

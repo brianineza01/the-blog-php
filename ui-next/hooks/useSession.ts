@@ -1,5 +1,5 @@
 "use client";
-import { useLocalStorage } from "@uidotdev/usehooks";
+import { useLocalStorage } from "@/config/@uidotdev/usehooks";
 
 interface Session {
     name: string;

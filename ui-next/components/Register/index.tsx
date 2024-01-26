@@ -42,7 +42,7 @@ const registerSchema = z
     });
 
 const handleSubmit = async (data: z.infer<typeof registerSchema>) => {
-    await fetch(`${API_BASE_URL}/api/register`, {
+    await fetch(`/backend/api/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

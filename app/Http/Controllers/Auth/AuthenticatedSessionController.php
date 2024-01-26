@@ -15,6 +15,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): JsonResponse
     {
+        echo "AuthenticatedSessionController";
         $request->authenticate();
 
         $request->session()->regenerate();

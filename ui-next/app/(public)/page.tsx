@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { handleGetPosts } from "../components/Posts/helpers";
-import PostCard from "../components/Posts/PostCard";
+import { handleGetPosts } from "../../components/Posts/helpers";
+import PostCard from "../../components/Posts/PostCard";
 
 export default async function Home() {
     const data = await handleGetPosts();

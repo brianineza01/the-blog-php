@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 const Spinner = ({ className }: { className?: string }) => {
     return (
         <Loader2
-            className={cn("h-16 w-16 text-primary/60 animate-spin", className)}
+            className={cn("h-6 w-6 text-primary/60 animate-spin", className)}
         />
     );
 };

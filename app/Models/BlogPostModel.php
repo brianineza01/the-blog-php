@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class BlogPostModel extends Model
 {
@@ -17,6 +19,21 @@ class BlogPostModel extends Model
         "image_url",
         "slug",
         "content",
+        "user_id",
     ];
 
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, "id", "user_id");
+    }
+
+    public function likes(): HasMany
+    {
+        return $this->hasMany(Like::class, "blog_post_id", "id");
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class, "blog_post_id", "id");
+    }
 }

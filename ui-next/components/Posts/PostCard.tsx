@@ -14,7 +14,7 @@ const PostCard = ({
     createdAt: string;
 }) => {
     return (
-        <Link href={`/posts/${slug}`}>
+        <Link href={`/${slug}`}>
             <div className="flex flex-col gap-1 items-center bg-gray-200 dark:bg-gray-800 p-4 rounded-lg">
                 <img
                     alt={`img-${title}`}
