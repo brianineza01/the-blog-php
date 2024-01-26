@@ -6,7 +6,11 @@ fi
 
 if [ ! -f ".env" ]; then
     echo "Creating env file for env $APP_ENV"
-    cp .env.example .env
+    if [ ! -f "etc/secrets/.env" ]; then
+        cp .env.example .env
+    else 
+        cp etc/secrets/.env .env
+    fi
 else
     echo "env file exists."
 fi
