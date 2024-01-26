@@ -7,9 +7,10 @@ import { permanentRedirect } from "next/navigation";
 import { cookies } from "next/headers";
 import dns from "dns";
 import { AxiosResponse } from "axios";
-import { Button } from "../../../components/ui/button";
 import React from "react";
-import ActionButtons from "../../../components/Posts/ActionButtons";
+import { Card } from "components/ui/card";
+import { ScrollArea } from "components/ui/scroll-area";
+import Image from "next/image";
 
 export interface BlogPostResponse {
     id: number;
@@ -49,7 +50,6 @@ const handleGetPostBySlug = async (slug: string) => {
         );
         return res.data;
     } catch (error: any) {
-        console.log(error.response.data);
         return null;
     }
 };
@@ -74,47 +74,54 @@ export default async function BlogPage({
 
     return (
         <main className="flex justify-center items-center min-h-screen">
-            <div className="flex-col lg:flex-row gap-6 flex w-4/5 border-1 border-primary">
-                <div className="lg:w-1/2 flex flex-col items-center justify-center">
+            <Card className="sticky top-0 flex-col lg:flex-row gap-6 flex w-4/5 border-1 border-primary h-[85vh] overflow-hidden">
+                <div className="lg:w-1/2 flex flex-col items-center justify-center h-full">
                     <img
-                        alt={params.slug}
-                        className="aspect-content overflow-hidden rounded-lg object-cover sticky"
+                        className="aspect-content rounded-lg object-cover sticky"
                         height={300}
                         src={data.image_url}
                         width={500}
+                        alt="Blog post image"
                     />
-                    <ActionButtons />
+                    {/* <ActionButtons /> */}
                 </div>
-                <div className="lg:w-1/2">
-                    <article className="prose prose-gray max-w-none dark:prose-invert">
-                        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
-                            {data.name}
-                        </h1>
-                        <div className="flex flex-col gap-4 mt-8">
-                            <div className="flex items-center gap-4">
-                                <Avatar className="h-12 w-12">
-                                    <AvatarImage
-                                        alt="Author's avatar"
-                                        src="/placeholder-avatar.jpg"
-                                    />
-                                    <AvatarFallback>JP</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <div className="font-semibold">
-                                        {data.user.name}
+                <div className="lg:w-1/2 overflow-scroll h-full">
+                    <ScrollArea className="h-[85vh] prose prose-lg max-w-none overflow-auto">
+                        <article className="prose prose-gray max-w-none dark:prose-invert ">
+                            <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
+                                {data.name}
+                            </h1>
+                            <div className="flex flex-col gap-4 mt-8">
+                                <div className="flex items-center gap-4">
+                                    <Avatar className="h-12 w-12">
+                                        <AvatarImage
+                                            alt="Author's avatar"
+                                            src="/placeholder-avatar.jpg"
+                                        />
+                                        <AvatarFallback>
+                                            {data.user.name.split(" ")[0][0]}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                        <div className="font-semibold">
+                                            {data.user.name}
+                                        </div>
                                     </div>
                                 </div>
+                                <div
+                                    dangerouslySetInnerHTML={{
+                                        __html: html_data,
+                                    }}
+                                    className="flex flex-col gap-4"
+                                />
                             </div>
-                            <div
-                                dangerouslySetInnerHTML={{ __html: html_data }}
-                            />
-                        </div>
-                        <p className="text-gray-500 dark:text-gray-400 mt-4">
-                            Published on January 17, 2024
-                        </p>
-                    </article>
+                            <p className="text-gray-500 dark:text-gray-400 mt-4">
+                                Published on January 17, 2024
+                            </p>
+                        </article>
+                    </ScrollArea>
                 </div>
-            </div>
+            </Card>
         </main>
     );
 }

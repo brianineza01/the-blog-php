@@ -16,5 +16,10 @@ export const handleCreatePostRequest = async (post: Post) => {
         method: "POST",
         body: formData,
     });
+
+    if (response.status === 400) {
+        const data = await response.json();
+        throw data;
+    }
     return response.json();
 };

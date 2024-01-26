@@ -4,7 +4,8 @@ import "app/globals.css";
 import Providers from "../components/Providers";
 import Link from "next/link";
 
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toaster";
+import AuthLinks from "../components/AuthLinks";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -20,40 +21,34 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={inter.className + " flex flex-col min-h-screen"}>
-                <header className="px-4 lg:px-6 h-14 flex items-center">
-                    <a className="flex items-center justify-center" href="#">
-                        <TagsIcon className="h-6 w-6 " />
-                        <span className="sr-only">Blog Logo</span>
-                    </a>
-                    <nav className="ml-auto flex gap-4 sm:gap-6">
+                <Providers>
+                    <header className="px-4 lg:px-6 h-14 flex items-center">
                         <Link
-                            className="text-sm font-medium hover:underline underline-offset-4 "
+                            className="flex items-center justify-center"
                             href="/"
                         >
-                            Home
+                            <span className="">The Blog</span>
                         </Link>
-                        <Link
+                        <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
+                            <Link
+                                className="text-sm font-medium hover:underline underline-offset-4 "
+                                href="/"
+                            >
+                                Home
+                            </Link>
+                            {/* <Link
                             className="text-sm font-medium hover:underline underline-offset-4 "
                             href="/about"
                         >
                             About
-                        </Link>
-                        <Link
-                            className="text-sm font-medium hover:underline underline-offset-4 "
-                            href="/login"
-                        >
-                            Login
-                        </Link>
-                        <Link
-                            className="text-sm font-medium hover:underline underline-offset-4 "
-                            href="/register"
-                        >
-                            Register
-                        </Link>
-                    </nav>
-                </header>
-                <Providers>{children}</Providers>
-                <Toaster />
+                        </Link> */}
+
+                            <AuthLinks />
+                        </nav>
+                    </header>
+                    {children}
+                    <Toaster />
+                </Providers>
             </body>
         </html>
     );

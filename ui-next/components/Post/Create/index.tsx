@@ -41,7 +41,9 @@ export default function CreatePostForm() {
     });
     const { mutate, isPending } = useMutation({
         mutationFn: handleCreatePostRequest,
-        onSuccess: () => {
+        onSuccess: (data) => {
+            if (data.status === "error") {
+            }
             console.log("success");
             toast({
                 title: "Post Created",

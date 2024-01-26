@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Card } from "../ui/card";
 
 const PostCard = ({
     img,
@@ -15,21 +16,23 @@ const PostCard = ({
 }) => {
     return (
         <Link href={`/${slug}`}>
-            <div className="flex flex-col gap-1 items-center bg-gray-200 dark:bg-gray-800 p-4 rounded-lg">
-                <img
-                    alt={`img-${title}`}
-                    className="aspect-content overflow-hidden rounded-lg object-cover"
-                    height="200"
-                    src={img}
-                    width="200"
-                />
-                <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300">
-                    {title}
-                </h3>
-                {/* <p className="text-sm text-gray-500 dark:text-gray-400">
+            <Card className="w-full h-[200px]">
+                <div className="flex flex-col gap-1 items-center bg-gray-200 dark:bg-gray-800 p-4 rounded-lg">
+                    <img
+                        alt={`img-${title}`}
+                        className="aspect-content overflow-hidden rounded-lg object-cover"
+                        height="200"
+                        src={img}
+                        width="200"
+                    />
+                    <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300">
+                        {title}
+                    </h3>
+                    {/* <p className="text-sm text-gray-500 dark:text-gray-400">
                 </p> */}
-                <span>{createdAt}</span>
-            </div>
+                    <span>{createdAt}</span>
+                </div>
+            </Card>
         </Link>
     );
 };

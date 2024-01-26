@@ -25,6 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "@/components/ui/Spinner";
 import { useRouter } from "next/navigation";
+import { useToast } from "../ui/use-toast";
 
 const registerSchema = z
     .object({
@@ -66,14 +67,27 @@ export default function Register() {
         },
     });
 
+    const { toast } = useToast();
     const onSubmit = (data: z.infer<typeof registerSchema>) => mutate(data);
 
     const { isPending, mutate } = useMutation({
         mutationFn: handleSubmit,
         onSuccess: () => {
+            toast({
+                title: "Account Created",
+                description: "Your account has been created successfully",
+                variant: "default",
+            });
             push("/login");
         },
         onError: (error) => {
+            toast({
+                title: "Error Occurred!",
+                description:
+                    error?.message ??
+                    "Error occurred while creating your account",
+                variant: "default",
+            });
             console.log(error);
         },
     });

@@ -27,6 +27,7 @@ import useSession from "@/hooks/useSession";
 import axios, { AxiosResponse } from "axios";
 import Link from "next/link";
 import Spinner from "../ui/Spinner";
+import { useToast } from "../ui/use-toast";
 
 axios.defaults.withCredentials = true;
 
@@ -64,6 +65,7 @@ const getCurrentUser = async () => {
 };
 export default function Login() {
     const [, setSession] = useSession();
+
     const { push } = useRouter();
     const form = useForm({
         resolver: zodResolver(loginSchema),
@@ -82,6 +84,7 @@ export default function Login() {
                 id: data.id,
                 name: data.name,
             });
+            refetch();
             push("/");
         },
         onError: (error) => {
@@ -89,7 +92,7 @@ export default function Login() {
         },
     });
 
-    const { isLoading, data, error } = useQuery({
+    const { isLoading, data, refetch } = useQuery({
         queryFn: getCurrentUser,
         queryKey: ["user"],
         retry: false,
@@ -129,6 +132,7 @@ export default function Login() {
                                 withCredentials: true,
                             });
                             push("/");
+                            refetch();
                         }}
                     >
                         Logout
