@@ -21,7 +21,6 @@ import {
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { API_BASE_URL } from "@/config/fetch";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import useSession from "@/hooks/useSession";

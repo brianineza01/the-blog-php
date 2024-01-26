@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
-import { API_BASE_URL } from "@/config/fetch";
 
 import { getRenderedHTML } from "@/components/Novel/utils";
 import axios from "@/config/axios";
@@ -40,7 +39,7 @@ const handleGetPostBySlug = async (slug: string) => {
 
     try {
         const res = await axios.get<any, AxiosResponse<BlogPostResponse>>(
-            `${API_BASE_URL}/api/blog-posts/${slug}`,
+            `/api/blog-posts/${slug}`,
             {
                 headers: {
                     Cookie: requestCookie,

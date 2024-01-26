@@ -1,8 +1,6 @@
-import axios from "@/config/axios";
-
 type Post = {
     name: string;
-    image: File;
+    image: any;
     content: Record<string, unknown>;
 };
 

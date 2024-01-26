@@ -1,4 +1,5 @@
 "use client";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -26,8 +27,8 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import Spinner from "../ui/Spinner";
-import { useRouter } from "next/router";
+import Spinner from "../../ui/Spinner";
+import { useRouter } from "next/navigation";
 
 export default function CreatePostForm() {
     const { push } = useRouter();

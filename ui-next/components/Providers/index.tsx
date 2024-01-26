@@ -3,7 +3,6 @@
 import React, { useEffect } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { API_BASE_URL } from "../../config/fetch";
 const queryClient = new QueryClient();
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
